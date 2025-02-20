@@ -1,2 +1,2 @@
-CREATE DATABASE IF NOT EXISTS my_database;
-CREATE user_schema IF NOT EXISTS user_schema;
+CREATE DATABASE IF NOT EXISTS vote_app_auth_db;
+CREATE vote_app_auth_schema IF NOT EXISTS vote_app_auth_schema;

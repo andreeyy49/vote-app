@@ -7,14 +7,86 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=user_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - vote-app-network
+
   redis:
     image: redis:7.0.12
     container_name: redis
     command: [ "redis-server", "--requirepass", "password" ]
     ports:
       - "6379:6379"
+    networks:
+      - vote-app-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - vote-app-network
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - vote-app-network
+
+  discovery-app:
+    image: discovery
+    container_name: discovery
+    ports:
+      - "8761:8761"
+    networks:
+      - vote-app-network
+
+  gateway:
+    image: gateway
+    container_name: gateway
+    depends_on:
+      - discovery-app
+    networks:
+      - vote-app-network
+    ports:
+      - "8080:8080"
+
+  auth-service:
+    image: auth-service
+    container_name: auth-service
+    depends_on:
+      - discovery-app
+      - postgres
+      - redis
+      - kafka
+    environment:
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - SPRING_REDIS_PASSWORD=password
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/vote_app_auth_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    networks:
+      - vote-app-network
+
+
+networks:
+  vote-app-network:
+    driver: bridge
