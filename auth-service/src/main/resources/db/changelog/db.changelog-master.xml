@@ -27,6 +27,6 @@
     </changeSet>
 
     <changeSet id="6" author="Andrei">
-        <sqlFile path="db/changelog/V6__delete_status_column.sql"
+        <sqlFile path="db/changelog/V6__delete_status_column.sql"/>
     </changeSet>
 </databaseChangeLog>
