@@ -17,7 +17,16 @@
     <changeSet id="3" author="Andrei">
         <sqlFile path="db/changelog/V3__add_user_status.sql"/>
     </changeSet>
+
     <changeSet id="4" author="Andrei">
         <sqlFile path="db/changelog/v4__delete_password_reset_token.sql"/>
+    </changeSet>
+
+    <changeSet id="5" author="Andrei">
+        <sqlFile path="db/changelog/V5__drop_roles_table.sql"/>
+    </changeSet>
+
+    <changeSet id="6" author="Andrei">
+        <sqlFile path="db/changelog/V6__delete_status_column.sql"
     </changeSet>
 </databaseChangeLog>

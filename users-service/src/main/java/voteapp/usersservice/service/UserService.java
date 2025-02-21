@@ -55,8 +55,4 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
-    public User login(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password).orElse(null);
-    }
 }

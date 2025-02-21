@@ -6,13 +6,19 @@ spring:
       ddl-auto: none
     show-sql: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/user_db
+    url: jdbc:postgresql://postgres:5432/vote_app_user_db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.xml
 
-server:
-  port: 8080
+  kafka:
+    bootstrap-servers: kafka:9092
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery:8761/eureka/
