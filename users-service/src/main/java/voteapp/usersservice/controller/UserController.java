@@ -21,8 +21,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User findById(@PathVariable("id") UUID id) {
-        return userService.findById(id);
+    public User findThisAccount() {
     }
 
 

@@ -13,7 +13,6 @@ import voteapp.authservice.dto.request.LoginRequest;
 import voteapp.authservice.dto.request.RegistrationRequest;
 import voteapp.authservice.dto.response.LoginResponse;
 import voteapp.authservice.exception.RefreshTokenException;
-import voteapp.authservice.model.RoleTypeAuth;
 import voteapp.authservice.model.User;
 import voteapp.authservice.model.RefreshToken;
 import voteapp.authservice.repository.UserRepository;
@@ -21,7 +20,7 @@ import voteapp.authservice.security.jjwt.JwtUtils;
 import voteapp.authservice.service.RefreshTokenService;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +51,7 @@ public class SecurityService {
 
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
             return LoginResponse.builder()
-                    .accessToken(jwtUtils.generateTokenFromUserId(userDetails.getEmail()))
+                    .accessToken(jwtUtils.generateTokenFromUserId(userDetails.getId()))
                     .refreshToken(refreshToken.getToken())
                     .build();
         } catch (IllegalArgumentException e) {
@@ -61,7 +60,7 @@ public class SecurityService {
             AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
             return LoginResponse.builder()
-                    .accessToken(jwtUtils.generateTokenFromUserId(userDetails.getEmail()))
+                    .accessToken(jwtUtils.generateTokenFromUserId(userDetails.getId()))
                     .refreshToken(refreshToken.getToken())
                     .build();
         }
@@ -86,8 +85,6 @@ public class SecurityService {
                 .password(passwordEncoder.encode(salt + request.getPassword1()))
                 .build();
 
-        user.setRoles(Collections.singleton(RoleTypeAuth.ROLE_USER));
-
         userAuthRepository.save(user);
     }
 
@@ -99,7 +96,7 @@ public class SecurityService {
                     User tokenOwner = userAuthRepository.findById(userId).orElseThrow(() ->
                             new RefreshTokenException("Exception trying to get token for userId: " + userId));
 
-                    return new LoginResponse(LocalDateTime.now(), jwtUtils.generateTokenFromUserId(tokenOwner.getEmail()), refreshTokenService.createRefreshToken(userId).getToken());
+                    return new LoginResponse(LocalDateTime.now(), jwtUtils.generateTokenFromUserId(tokenOwner.getId()), refreshTokenService.createRefreshToken(userId).getToken());
                 }).orElseThrow(() -> new RefreshTokenException(requestRefreshToken, "Refresh token not found"));
     }
 
@@ -107,7 +104,7 @@ public class SecurityService {
         var currentPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (currentPrincipal instanceof AppUserDetails userDetails) {
-            Long userId = userDetails.getId();
+            UUID userId = userDetails.getId();
 
             refreshTokenService.deleteByUserId(userId);
         }

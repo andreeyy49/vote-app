@@ -27,7 +27,8 @@ public class RefreshTokenService {
     public Optional<RefreshToken> findByRefreshToken(String token) {
         return repository.findByToken(token);
     }
-    public RefreshToken createRefreshToken(Long userId) {
+
+    public RefreshToken createRefreshToken(UUID userId) {
         var refreshToken = RefreshToken.builder()
                 .userId(userId)
                 .expiryDate(Instant.now().plusMillis(refreshTokenExpiration.toMillis()))
@@ -42,7 +43,7 @@ public class RefreshTokenService {
         }
         return token;
     }
-    public void deleteByUserId(Long userId) {
+    public void deleteByUserId(UUID userId) {
         repository.deleteByUserId(userId);
     }
 

@@ -1,13 +1,13 @@
 package voteapp.authservice.model;
 
+import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.UUID;
 
 @Builder
 @Entity
@@ -18,8 +18,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @Column(name = "user_name")
     private String username;
@@ -28,14 +27,13 @@ public class User {
 
     private String password;
 
-//    private String token;
+    @PrePersist
+    protected void generateUuid() {
+        if (this.id == null) {
+            this.id = UuidCreator.getTimeOrdered();
+        }
+    }
 
-    @ElementCollection(targetClass = RoleTypeAuth.class, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "roles", nullable = false)
-    @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private Set<RoleTypeAuth> roles = new HashSet<>();
 
 //    @Enumerated(EnumType.STRING)
 //    @Column(name = "status", nullable = false)

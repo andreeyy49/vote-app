@@ -29,4 +29,9 @@
     <changeSet id="6" author="Andrei">
         <sqlFile path="db/changelog/V6__delete_status_column.sql"/>
     </changeSet>
+
+    <changeSet id="7" author="Andrei">
+        <sqlFile path="db/changelog/V7__change_id_type_in_long_to_UUID.sql"/>
+    </changeSet>
+
 </databaseChangeLog>

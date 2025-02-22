@@ -10,6 +10,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -22,12 +23,12 @@ public class JwtUtils {
     private Duration tokenExpiration;
 
 
-    public String generateTokenFromUserId(String userId) {
+    public String generateTokenFromUserId(UUID userId) {
 
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 
         return Jwts.builder()
-                .setSubject(userId)
+                .setSubject(userId.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + tokenExpiration.toMillis()))
                 .signWith(secretKey, SignatureAlgorithm.HS512)

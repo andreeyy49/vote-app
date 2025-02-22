@@ -6,7 +6,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import voteapp.authservice.model.User;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class AppUserDetails implements UserDetails {
@@ -15,8 +17,7 @@ public class AppUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles().stream()
-                .map(roleType -> new SimpleGrantedAuthority(roleType.name())).toList();
+        return new ArrayList<>();
     }
 
     @Override
@@ -33,13 +34,10 @@ public class AppUserDetails implements UserDetails {
         return user.getEmail();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return user.getId();
     }
 
-//    public String getToken() {
-//        return user.getToken();
-//    }
 
     @Override
     public boolean isAccountNonExpired() {
