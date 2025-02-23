@@ -40,7 +40,7 @@ app:
   kafka:
     kafkaEventTopic: user-registration-event-topic
     kafkaValidateEventTopic: user-online-time-event-topic
-    kafkaAccountRegistrationEventTopic: account-events-topic
+#    kafkaAccountRegistrationEventTopic: account-events-topic
     kafkaEventGroupId: user-registration-event-group-id
 
   salt: "SuperSecretSalt"

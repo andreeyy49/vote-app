@@ -1,4 +1,4 @@
-package voteapp.authservice.dto.event;
+package voteapp.usersservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

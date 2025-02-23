@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import voteapp.usersservice.model.User;
 import voteapp.usersservice.repository.UserRepository;
+import voteapp.usersservice.util.UserContext;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,13 +27,16 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
+    public User findThisAccount() {
+        return findById(UserContext.getUserId());
+    }
+
     public User update(User user, UUID id) {
         User existingUser = findById(id);
 
         if (existingUser != null) {
             existingUser.setName(user.getName());
             existingUser.setEmail(user.getEmail());
-            existingUser.setPassword(user.getPassword());
             return save(existingUser);
         }
 

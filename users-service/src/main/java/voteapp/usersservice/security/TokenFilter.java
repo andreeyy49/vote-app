@@ -16,10 +16,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import voteapp.usersservice.client.AuthClient;
 import voteapp.usersservice.dto.ErrorResponse;
 import voteapp.usersservice.exception.InvalidTokenException;
+import voteapp.usersservice.util.UserContext;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Collections;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -34,8 +36,6 @@ public class TokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("Authorization");
 
-        String url = request.getRequestURI();
-
         log.info("token {}", token);
         try {
             boolean isValid = authClient.validateToken(token);
@@ -43,18 +43,19 @@ public class TokenFilter extends OncePerRequestFilter {
                 throw new InvalidTokenException("Invalid token");
             }
             String userId = getUserId(token);
+            UserContext.setUserId(UUID.fromString(userId));
             Authentication authentication = getAuthentication(userId);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
         } catch (InvalidTokenException e) {
             ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
             response.getWriter().flush();
+        } finally {
+            UserContext.clear();
         }
-
-
-        filterChain.doFilter(request, response);
     }
 
     private Authentication getAuthentication(String userId) {

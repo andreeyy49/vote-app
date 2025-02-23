@@ -27,12 +27,12 @@ public class User {
 
     private String password;
 
-    @PrePersist
-    protected void generateUuid() {
-        if (this.id == null) {
-            this.id = UuidCreator.getTimeOrdered();
-        }
-    }
+//    @PrePersist
+//    protected void generateUuid() {
+//        if (this.id == null) {
+//            this.id = UuidCreator.getTimeOrdered();
+//        }
+//    }
 
 
 //    @Enumerated(EnumType.STRING)

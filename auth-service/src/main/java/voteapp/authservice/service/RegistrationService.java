@@ -10,6 +10,7 @@ import voteapp.authservice.dto.event.UserRegistrationEvent;
 import voteapp.authservice.dto.request.RegistrationRequest;
 import voteapp.authservice.exception.AlreadyExistsException;
 import voteapp.authservice.exception.DifferentPasswordsException;
+import voteapp.authservice.model.User;
 import voteapp.authservice.security.SecurityService;
 
 @Service
@@ -42,12 +43,17 @@ public class RegistrationService {
                 .userName(request.getUserName())
                 .build();
         String mappedEvent;
+
+        User user = securityService.register(request);
+
+        event.setId(String.valueOf(user.getId()));
+
         try {
             mappedEvent = objectMapper.writeValueAsString(event);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+
         userRegisteredEvent.send(topicName, mappedEvent);
-        securityService.register(request);
     }
 }

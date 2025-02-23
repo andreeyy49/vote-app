@@ -1,5 +1,6 @@
 package voteapp.authservice.security;
 
+import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,14 +79,15 @@ public class SecurityService {
         return authentication;
     }
 
-    public void register(RegistrationRequest request) {
+    public User register(RegistrationRequest request) {
         var user = User.builder()
                 .username(request.getUserName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(salt + request.getPassword1()))
+                .id(UuidCreator.getTimeOrdered())
                 .build();
 
-        userAuthRepository.save(user);
+        return userAuthRepository.save(user);
     }
 
     public LoginResponse refreshToken(String requestRefreshToken) {

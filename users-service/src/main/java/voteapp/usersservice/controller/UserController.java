@@ -5,9 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import voteapp.usersservice.model.User;
 import voteapp.usersservice.service.UserService;
 
-import java.util.List;
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
@@ -15,19 +12,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
-    public List<User> findAll() {
-        return userService.findAll();
-    }
-
-    @GetMapping("/{id}")
+    @GetMapping("/findThisAccount")
     public User findThisAccount() {
-    }
-
-
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") UUID id) {
-        userService.deleteById(id);
+        return userService.findThisAccount();
     }
 
 }
