@@ -6,7 +6,7 @@ spring:
       ddl-auto: none
     show-sql: true
   datasource:
-    url: jdbc:postgresql://postgres:5432/vote_app_user_db
+    url: jdbc:postgresql://postgres:5432/vote_app_user_community_ship_db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
