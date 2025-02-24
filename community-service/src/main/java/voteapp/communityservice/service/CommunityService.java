@@ -34,6 +34,10 @@ public class CommunityService {
         return communityRepository.findAllById(ids);
     }
 
+    public List<Community> findByTitleFragment(String titleFragment) {
+        return communityRepository.findByTitleFragment(titleFragment);
+    }
+
     public Community save(Community community) {
         CommunityEvent event = new CommunityEvent(UserContext.getUserId(), community.getId());
         String mappedEvent;

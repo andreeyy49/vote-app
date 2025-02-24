@@ -6,7 +6,6 @@ import voteapp.membershipservice.model.UserCommunityShip;
 import voteapp.membershipservice.service.UserCommunityShipService;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/membership")
@@ -20,9 +19,9 @@ public class UserCommunityShipController {
         return userCommunityShipService.findAll();
     }
 
-    @GetMapping("/findAllByUserId/{userId}")
-    public List<UserCommunityShip> findAllByUserId(@PathVariable String userId) {
-        return userCommunityShipService.findAllByUserId(UUID.fromString(userId));
+    @GetMapping("/findAllByUserId")
+    public List<UserCommunityShip> findAllByUserId() {
+        return userCommunityShipService.findAllByUserId();
     }
 
     @GetMapping("/findAllByCommunityId/{communityId}")

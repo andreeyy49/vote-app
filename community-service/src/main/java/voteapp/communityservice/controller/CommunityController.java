@@ -24,6 +24,11 @@ public class CommunityController {
         return communityService.findById(id);
     }
 
+    @GetMapping("findAllByFragment/{fragment}")
+    public List<Community> findAllByFragment(@PathVariable String fragment) {
+        return communityService.findByTitleFragment(fragment);
+    }
+
     @GetMapping("/findAllByIds")
     public List<Community> findAllByIds(@RequestBody List<Long> ids) {
         return communityService.findAllById(ids);

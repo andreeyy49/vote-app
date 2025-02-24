@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import voteapp.membershipservice.model.UserCommunityShip;
 import voteapp.membershipservice.repository.UserCommunityShipRepository;
+import voteapp.membershipservice.util.UserContext;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +18,8 @@ public class UserCommunityShipService {
         return userCommunityShipRepository.findAll();
     }
 
-    public List<UserCommunityShip> findAllByUserId(UUID userId) {
-        return userCommunityShipRepository.findAllByUserId(userId);
+    public List<UserCommunityShip> findAllByUserId() {
+        return userCommunityShipRepository.findAllByUserId(UserContext.getUserId());
     }
 
     public List<UserCommunityShip> findAllByCommunityId(Long communityId) {
