@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
         </processorPath>
         <module name="auth-service" />
       </profile>
@@ -19,7 +20,7 @@
         <module name="discovery" />
         <module name="gateway" />
       </profile>
-      <profile name="Annotation profile for users-service" enabled="true">
+      <profile name="Annotation profile for community-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -27,6 +28,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
         <module name="users-service" />
+        <module name="community-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -37,6 +39,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="auth" options="-parameters" />
       <module name="auth-service" options="-parameters" />
+      <module name="community-service" options="-parameters" />
       <module name="discovery" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="users-service" options="-parameters" />
