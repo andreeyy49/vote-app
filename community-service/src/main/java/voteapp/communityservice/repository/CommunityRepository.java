@@ -8,7 +8,7 @@ import voteapp.communityservice.model.Community;
 import java.util.List;
 
 public interface CommunityRepository extends JpaRepository<Community, Long> {
-    @Query("SELECT c FROM Community c WHERE to_tsvector('russian', c.title) @@ plainto_tsquery(:fragment)")
-    List<Community> findByTitleFragment(@Param("fragment") String fragment);
 
+    @Query(value = "SELECT c FROM Community c WHERE to_tsvector('russian', c.title) @@ plainto_tsquery(:fragment)", nativeQuery = true)
+    List<Community> findByTitleFragment(@Param("fragment") String fragment);
 }
