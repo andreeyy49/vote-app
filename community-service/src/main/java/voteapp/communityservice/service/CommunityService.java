@@ -49,6 +49,7 @@ public class CommunityService {
         }
 
         kafkaTemplate.send(mappedEvent, topic);
+        community.setAdmin(UserContext.getUserId());
         return communityRepository.save(community);
     }
 

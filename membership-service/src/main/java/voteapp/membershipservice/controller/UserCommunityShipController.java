@@ -29,8 +29,8 @@ public class UserCommunityShipController {
         return userCommunityShipService.findAllByCommunityId(communityId);
     }
 
-    @PostMapping
-    public UserCommunityShip create(@RequestBody UserCommunityShip userCommunityShip) {
-        return userCommunityShipService.save(userCommunityShip);
+    @PostMapping("/{communityId}")
+    public UserCommunityShip create(@PathVariable Long communityId) {
+        return userCommunityShipService.save(communityId);
     }
 }

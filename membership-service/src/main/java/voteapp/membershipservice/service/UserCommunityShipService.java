@@ -29,4 +29,11 @@ public class UserCommunityShipService {
     public UserCommunityShip save(UserCommunityShip userCommunityShip) {
         return userCommunityShipRepository.save(userCommunityShip);
     }
+
+    public UserCommunityShip save(Long communityId) {
+        UserCommunityShip userCommunityShip = new UserCommunityShip();
+        userCommunityShip.setCommunityId(communityId);
+        userCommunityShip.setUserId(UserContext.getUserId());
+        return userCommunityShipRepository.save(userCommunityShip);
+    }
 }
