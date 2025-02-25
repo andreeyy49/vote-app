@@ -36,4 +36,11 @@ public class UserCommunityShipService {
         userCommunityShip.setUserId(UserContext.getUserId());
         return userCommunityShipRepository.save(userCommunityShip);
     }
+
+    public void deleteByCommunityId(Long communityId) {
+        UserCommunityShip userCommunityShip = new UserCommunityShip();
+        userCommunityShip.setCommunityId(communityId);
+        userCommunityShip.setUserId(UserContext.getUserId());
+        userCommunityShipRepository.delete(userCommunityShip);
+    }
 }

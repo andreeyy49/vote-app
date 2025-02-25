@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import voteapp.authservice.security.UserDetailsServiceImpl;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -37,7 +38,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             if (jwtToken != null && jwtUtils.validate(jwtToken)) {
                 String token = jwtUtils.getEmail(jwtToken);
                 System.out.println(token +" token");
-                UserDetails userDetails = userDetailsService.loadUserByUsername(token);
+                UserDetails userDetails = userDetailsService.loadUserById(UUID.fromString(token));
 
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()

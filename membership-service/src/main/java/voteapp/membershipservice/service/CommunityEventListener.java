@@ -34,7 +34,6 @@ public class CommunityEventListener {
 
             log.info("Получено событие: Пользователь {} вступил в {}", event.getUserId(), event.getCommunityId());
 
-            // Здесь можно обработать событие (сохранить в БД)
         } catch (JsonProcessingException e) {
             log.error("Ошибка десериализации Kafka-сообщения", e);
         }

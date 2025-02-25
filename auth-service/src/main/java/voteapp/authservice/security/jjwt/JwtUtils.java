@@ -48,7 +48,6 @@ public class JwtUtils {
                 .getSubject();
     }
 
-
     public boolean validate(String authToken) throws SecurityException, MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException {
 
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));

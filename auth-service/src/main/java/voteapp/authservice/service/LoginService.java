@@ -11,6 +11,8 @@ import voteapp.authservice.security.SecurityService;
 import voteapp.authservice.security.UserDetailsServiceImpl;
 import voteapp.authservice.security.jjwt.JwtUtils;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class LoginService {
@@ -48,7 +50,7 @@ public class LoginService {
 //            ValidateTokenEvent event = ValidateTokenEvent.builder().UUID(uuid).build();
 //            validateTokenEvent.send(topicName, objectMapper.writeValueAsString(event));
 
-            return userDetailsService.loadUserByUsername(uuid) != null;
+            return userDetailsService.loadUserById(UUID.fromString(uuid)) != null;
         } catch (Exception e) {
             return false;
         }

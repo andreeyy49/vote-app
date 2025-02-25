@@ -39,7 +39,10 @@ public class CommunityService {
     }
 
     public Community save(Community community) {
-        CommunityEvent event = new CommunityEvent(UserContext.getUserId(), community.getId());
+        community.setAdmin(UserContext.getUserId());
+        community = communityRepository.save(community);
+
+        CommunityEvent event = new CommunityEvent(community.getAdmin(), community.getId());
         String mappedEvent;
 
         try {
@@ -48,9 +51,9 @@ public class CommunityService {
             throw new RuntimeException(e);
         }
 
-        kafkaTemplate.send(mappedEvent, topic);
-        community.setAdmin(UserContext.getUserId());
-        return communityRepository.save(community);
+        kafkaTemplate.send(topic, mappedEvent);
+
+        return community;
     }
 
     public Community findById(Long id) {

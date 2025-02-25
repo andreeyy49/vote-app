@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import voteapp.authservice.model.User;
 import voteapp.authservice.repository.UserRepository;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -22,5 +24,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return new AppUserDetails(user);
     }
-}
 
+    public UserDetails loadUserById(UUID id) {
+        User user = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        return new AppUserDetails(user);
+    }
+}

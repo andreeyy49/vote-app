@@ -33,4 +33,9 @@ public class UserCommunityShipController {
     public UserCommunityShip create(@PathVariable Long communityId) {
         return userCommunityShipService.save(communityId);
     }
+
+    @DeleteMapping("/deleteByCommunityId/{communityId}")
+    public void delete(@PathVariable Long communityId) {
+        userCommunityShipService.deleteByCommunityId(communityId);
+    }
 }
