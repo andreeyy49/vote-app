@@ -10,4 +10,5 @@ public interface UserCommunityShipRepository extends JpaRepository<UserCommunity
 
     List<UserCommunityShip> findAllByUserId(UUID userId);
     List<UserCommunityShip> findAllByCommunityId(Long communityId);
+    void deleteByUserIdAndCommunityId(UUID userId, Long communityId);
 }

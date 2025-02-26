@@ -29,7 +29,7 @@ public class CommunityController {
         return communityService.findByTitleFragment(fragment);
     }
 
-    @GetMapping("/findAllByIds")
+    @PostMapping("/findAllByIds")
     public List<Community> findAllByIds(@RequestBody List<Long> ids) {
         return communityService.findAllById(ids);
     }

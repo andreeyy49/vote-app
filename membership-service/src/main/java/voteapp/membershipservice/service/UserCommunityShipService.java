@@ -1,5 +1,6 @@
 package voteapp.membershipservice.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import voteapp.membershipservice.model.UserCommunityShip;
@@ -37,10 +38,8 @@ public class UserCommunityShipService {
         return userCommunityShipRepository.save(userCommunityShip);
     }
 
+    @Transactional
     public void deleteByCommunityId(Long communityId) {
-        UserCommunityShip userCommunityShip = new UserCommunityShip();
-        userCommunityShip.setCommunityId(communityId);
-        userCommunityShip.setUserId(UserContext.getUserId());
-        userCommunityShipRepository.delete(userCommunityShip);
+        userCommunityShipRepository.deleteByUserIdAndCommunityId(UserContext.getUserId(), communityId);
     }
 }
