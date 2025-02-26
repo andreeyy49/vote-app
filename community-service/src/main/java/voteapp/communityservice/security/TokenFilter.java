@@ -36,25 +36,44 @@ public class TokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("Authorization");
 
-        log.info("token {}", token);
+        log.info("Received token: {}", token);
+
         try {
+            // Проверка токена
             boolean isValid = authClient.validateToken(token);
+            log.info("Token valid: {}", isValid);
+
             if (!isValid) {
+                log.warn("Invalid token detected, rejecting request.");
                 throw new InvalidTokenException("Invalid token");
             }
+
+            // Извлечение userId
             String userId = getUserId(token);
+            log.info("Extracted userId: {}", userId);
+
+            // Установка контекста пользователя
             UserContext.setUserId(UUID.fromString(userId));
+
+            // Создание аутентификации
             Authentication authentication = getAuthentication(userId);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // Передаем запрос дальше в цепочку
             filterChain.doFilter(request, response);
         } catch (InvalidTokenException e) {
+            log.error("Token validation failed: {}", e.getMessage());
+
+            // Отправка ответа об ошибке
             ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
             response.getWriter().flush();
         } finally {
+            // Очистка контекста пользователя
             UserContext.clear();
+            log.info("UserContext cleared.");
         }
     }
 
@@ -64,10 +83,11 @@ public class TokenFilter extends OncePerRequestFilter {
 
     private String getUserId(String token) {
         try {
-            token = token.substring(7);
+            token = token.substring(7); // Убираем "Bearer " из токена
             return SignedJWT.parse(token).getJWTClaimsSet().getSubject();
         } catch (ParseException e) {
-            throw new InvalidTokenException("Token dont hase payload");
+            log.error("Error parsing token: {}", e.getMessage());
+            throw new InvalidTokenException("Token doesn't have payload");
         }
     }
 }

@@ -34,6 +34,11 @@ public class CommunityController {
         return communityService.findAllById(ids);
     }
 
+    @GetMapping("/findByTitle/{title}")
+    public Boolean findByTitle(@PathVariable String title) {
+        return communityService.findByTitle(title);
+    }
+
     @PostMapping
     public Community save(@RequestBody Community community) {
         return communityService.save(community);

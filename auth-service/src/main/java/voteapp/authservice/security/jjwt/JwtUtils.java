@@ -22,41 +22,70 @@ public class JwtUtils {
     @Value("${app.jwt.tokenExpiration}")
     private Duration tokenExpiration;
 
-
     public String generateTokenFromUserId(UUID userId) {
+        log.debug("Генерация JWT для userId: {}", userId);
 
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setSubject(userId.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + tokenExpiration.toMillis()))
                 .signWith(secretKey, SignatureAlgorithm.HS512)
                 .compact();
-    }
 
+        log.info("JWT успешно сгенерирован для userId: {}", userId);
+        return token;
+    }
 
     public String getEmail(String token) {
+        log.debug("Извлечение email из JWT");
 
-        SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        try {
+            SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+            String email = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+
+            log.info("Email успешно извлечен из JWT: {}", email);
+            return email;
+        } catch (JwtException e) {
+            log.warn("Ошибка при извлечении email из JWT: {}", e.getMessage());
+            throw e;
+        }
     }
 
-    public boolean validate(String authToken) throws SecurityException, MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException {
+    public boolean validate(String authToken) {
+        log.debug("Валидация JWT");
 
-        SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        try {
+            SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 
-        Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(authToken);
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(authToken);
 
-        return true;
+            log.info("JWT успешно прошел валидацию");
+            return true;
+        } catch (SecurityException e) {
+            log.warn("Ошибка безопасности при валидации JWT: {}", e.getMessage());
+        } catch (MalformedJwtException e) {
+            log.warn("Некорректный JWT: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            log.warn("JWT истек: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.warn("Неподдерживаемый формат JWT: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.warn("JWT пуст или имеет недопустимый формат: {}", e.getMessage());
+        } catch (Exception e) {
+            log.error("Неизвестная ошибка при валидации JWT", e);
+        }
+
+        return false;
     }
 }

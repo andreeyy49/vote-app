@@ -74,4 +74,8 @@ public class CommunityService {
     public void deleteById(Long id) {
         communityRepository.deleteById(id);
     }
+
+    public Boolean findByTitle(String title) {
+        return communityRepository.findByTitle(title) != null;
+    }
 }

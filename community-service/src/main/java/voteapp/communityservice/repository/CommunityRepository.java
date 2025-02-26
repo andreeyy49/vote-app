@@ -11,4 +11,6 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
 
     @Query(value = "SELECT c FROM Community c WHERE to_tsvector('russian', c.title) @@ plainto_tsquery(:fragment)", nativeQuery = true)
     List<Community> findByTitleFragment(@Param("fragment") String fragment);
+
+    Community findByTitle(String title);
 }
