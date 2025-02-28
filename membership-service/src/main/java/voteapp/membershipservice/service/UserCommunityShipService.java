@@ -1,45 +1,63 @@
 package voteapp.membershipservice.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import voteapp.membershipservice.model.UserCommunityShip;
-import voteapp.membershipservice.repository.UserCommunityShipRepository;
+import voteapp.membershipservice.repository.UserCommunityShipReactiveRepository;
 import voteapp.membershipservice.util.UserContext;
 
-import java.util.List;
-
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserCommunityShipService {
 
-    private final UserCommunityShipRepository userCommunityShipRepository;
+    private final UserCommunityShipReactiveRepository userCommunityShipReactiveRepository;
 
-    public List<UserCommunityShip> findAll() {
-        return userCommunityShipRepository.findAll();
+    public Flux<UserCommunityShip> findAll() {
+        return userCommunityShipReactiveRepository.findAll();
     }
 
-    public List<UserCommunityShip> findAllByUserId() {
-        return userCommunityShipRepository.findAllByUserId(UserContext.getUserId());
+    public Flux<UserCommunityShip> findAllByUserId() {
+        return UserContext.getUserId()
+                .flatMapMany(userId -> {
+                    log.info("Request received for userId: {}", userId);
+                    return userCommunityShipReactiveRepository.findAllByUserId(userId)
+                            .doOnTerminate(() -> log.info("Request processing completed for userId: {}", userId))
+                            .doOnError(e -> log.error("Error occurred while fetching data for userId: {}", userId, e));
+                })
+                .onErrorResume(e -> {
+                    log.error("Error in findAllByUserId", e);
+                    return Flux.error(e);
+                });
     }
 
-    public List<UserCommunityShip> findAllByCommunityId(Long communityId) {
-        return userCommunityShipRepository.findAllByCommunityId(communityId);
+    public Mono<Void> save(UserCommunityShip userCommunityShip) {
+        return userCommunityShipReactiveRepository.save(userCommunityShip).then();
     }
 
-    public UserCommunityShip save(UserCommunityShip userCommunityShip) {
-        return userCommunityShipRepository.save(userCommunityShip);
+    public Mono<UserCommunityShip> save(Long communityId) {
+        return UserContext.getUserId()
+                .flatMap(userId -> {
+                    log.info("Request received for userId: {}", userId);
+                    UserCommunityShip userCommunityShip = new UserCommunityShip();
+                    userCommunityShip.setCommunityId(communityId);
+                    userCommunityShip.setUserId(userId);
+                    return userCommunityShipReactiveRepository.save(userCommunityShip);
+                });
+//        return Mono.fromSupplier(() -> {
+//            UserCommunityShip userCommunityShip = new UserCommunityShip();
+//            userCommunityShip.setCommunityId(communityId);
+//            userCommunityShip.setUserId(UserContext.getUserId());
+//            return userCommunityShip;
+//        }).flatMap(userCommunityShipReactiveRepository::save);
     }
 
-    public UserCommunityShip save(Long communityId) {
-        UserCommunityShip userCommunityShip = new UserCommunityShip();
-        userCommunityShip.setCommunityId(communityId);
-        userCommunityShip.setUserId(UserContext.getUserId());
-        return userCommunityShipRepository.save(userCommunityShip);
-    }
-
-    @Transactional
-    public void deleteByCommunityId(Long communityId) {
-        userCommunityShipRepository.deleteByUserIdAndCommunityId(UserContext.getUserId(), communityId);
+    public Mono<Void> deleteByCommunityId(Long communityId) {
+        return UserContext.getUserId()
+                .flatMap(userId -> userCommunityShipReactiveRepository.deleteByUserIdAndCommunityId(userId, communityId));
+//        return userCommunityShipReactiveRepository.deleteByUserIdAndCommunityId(UserContext.getUserId(), communityId);
     }
 }

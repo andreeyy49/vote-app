@@ -1,37 +1,37 @@
 package voteapp.membershipservice.config;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 import voteapp.membershipservice.security.TokenFilter;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableWebSecurity
+@EnableWebFluxSecurity
 public class SecurityConfig {
-
 
     private final TokenFilter tokenFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/api/v1/membership/**").authenticated())
-                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer
-                        .authenticationEntryPoint((request, response, authException) ->
-                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED)));
-
-        return http.build();
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        return http
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers("/api/v1/membership/**").authenticated()
+                        .anyExchange().permitAll()
+                )
+                .addFilterAt(tokenFilter, SecurityWebFiltersOrder.AUTHENTICATION) // Добавляем твой фильтр
+                .exceptionHandling(exceptionHandlingSpec -> exceptionHandlingSpec
+                        .authenticationEntryPoint((exchange, ex) -> {
+                            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                            return exchange.getResponse().setComplete(); // Mono<Void>
+                        })
+                )
+                .build();
     }
 }

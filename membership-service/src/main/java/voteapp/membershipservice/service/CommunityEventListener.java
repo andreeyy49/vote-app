@@ -9,6 +9,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import voteapp.membershipservice.dto.CommunityEvent;
 import voteapp.membershipservice.model.UserCommunityShip;
+import voteapp.membershipservice.repository.UserCommunityShipReactiveRepository;
 
 @Slf4j
 @Service
@@ -20,6 +21,8 @@ public class CommunityEventListener {
 
     private final UserCommunityShipService userCommunityShipService;
 
+    private final UserCommunityShipReactiveRepository repository;
+
     @KafkaListener(topics = "${app.kafka.kafkaEventTopic}", groupId = "${app.kafka.kafkaEventGroupId}")
     public void handleUserCreated(ConsumerRecord<String, String> record) {
         log.info("Received message: {}", record.value());
@@ -30,7 +33,10 @@ public class CommunityEventListener {
             userCommunityShip.setCommunityId(event.getCommunityId());
             userCommunityShip.setUserId(event.getUserId());
 
-            userCommunityShipService.save(userCommunityShip);
+            repository.save(userCommunityShip)
+                    .doOnSuccess(saved -> System.out.println("Запись сохранена: " + saved))
+                    .doOnError(error -> System.err.println("Ошибка сохранения: " + error.getMessage()))
+                    .subscribe();
 
             log.info("Получено событие: Пользователь {} вступил в {}", event.getUserId(), event.getCommunityId());
 

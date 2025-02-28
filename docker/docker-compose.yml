@@ -130,9 +130,6 @@ services:
       - postgres
       - kafka
     environment:
-      - SPRING_REDIS_PORT=6379
-      - SPRING_REDIS_PASSWORD=password
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/vote_app_user_community_ship_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092

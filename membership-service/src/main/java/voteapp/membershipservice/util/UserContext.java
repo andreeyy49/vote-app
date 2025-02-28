@@ -1,20 +1,26 @@
 package voteapp.membershipservice.util;
 
+import reactor.core.publisher.Mono;
+import reactor.util.context.Context;
 import java.util.UUID;
 
 public class UserContext {
 
-    private final static ThreadLocal<UUID> userId = new ThreadLocal<>();
+    public static final String USER_ID_KEY = "user-id";
 
-    public static void setUserId(UUID id) {
-        userId.set(id);
+    // Добавляем userId в контекст
+    public static Context withUserId(UUID userId) {
+        return Context.of(USER_ID_KEY, userId);
     }
 
-    public static UUID getUserId() {
-        return userId.get();
-    }
-
-    public static void clear() {
-        userId.remove();
+    // Получаем userId из контекста
+    public static Mono<UUID> getUserId() {
+        return Mono.deferContextual(ctx -> {
+            if (ctx.hasKey(USER_ID_KEY)) {
+                return Mono.just(ctx.get(USER_ID_KEY));
+            } else {
+                return Mono.error(new IllegalStateException("User ID not found in context"));
+            }
+        });
     }
 }
