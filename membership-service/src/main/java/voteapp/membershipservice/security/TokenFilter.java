@@ -62,12 +62,12 @@ public class TokenFilter implements WebFilter {
                         return unauthorized(exchange, e.getMessage());
                     }
 
-                    UserContext.withUserId(UUID.fromString(userId));
                     Authentication authentication = getAuthentication(userId);
                     SecurityContext context = new SecurityContextImpl(authentication);
 
                     return chain.filter(exchange)
-                            .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(Mono.just(context)));
+                            .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(Mono.just(context)))
+                            .contextWrite(UserContext.withUserId(UUID.fromString(userId)));
                 });
     }
 

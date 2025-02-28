@@ -15,12 +15,10 @@ public class UserContext {
 
     // Получаем userId из контекста
     public static Mono<UUID> getUserId() {
-        return Mono.deferContextual(ctx -> {
-            if (ctx.hasKey(USER_ID_KEY)) {
-                return Mono.just(ctx.get(USER_ID_KEY));
-            } else {
-                return Mono.error(new IllegalStateException("User ID not found in context"));
-            }
-        });
+        return Mono.deferContextual(ctx ->
+                ctx.getOrEmpty(USER_ID_KEY)
+                        .map(id -> Mono.just((UUID) id))
+                        .orElseGet(() -> Mono.error(new IllegalStateException("User ID not found in context")))
+        );
     }
 }
