@@ -19,8 +19,6 @@ public class CommunityEventListener {
 
     private final ObjectMapper objectMapper;
 
-    private final UserCommunityShipService userCommunityShipService;
-
     private final UserCommunityShipReactiveRepository repository;
 
     @KafkaListener(topics = "${app.kafka.kafkaEventTopic}", groupId = "${app.kafka.kafkaEventGroupId}")

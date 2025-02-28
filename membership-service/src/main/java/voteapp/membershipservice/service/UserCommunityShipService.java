@@ -2,6 +2,8 @@ package voteapp.membershipservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -15,6 +17,11 @@ import voteapp.membershipservice.util.UserContext;
 public class UserCommunityShipService {
 
     private final UserCommunityShipReactiveRepository userCommunityShipReactiveRepository;
+
+    @Value("${app.kafka.kafkaEventDeleteTopic}")
+    private String topicName;
+
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     public Flux<UserCommunityShip> findAll() {
         return userCommunityShipReactiveRepository.findAll();
@@ -47,17 +54,23 @@ public class UserCommunityShipService {
                     userCommunityShip.setUserId(userId);
                     return userCommunityShipReactiveRepository.save(userCommunityShip);
                 });
-//        return Mono.fromSupplier(() -> {
-//            UserCommunityShip userCommunityShip = new UserCommunityShip();
-//            userCommunityShip.setCommunityId(communityId);
-//            userCommunityShip.setUserId(UserContext.getUserId());
-//            return userCommunityShip;
-//        }).flatMap(userCommunityShipReactiveRepository::save);
     }
 
     public Mono<Void> deleteByCommunityId(Long communityId) {
         return UserContext.getUserId()
-                .flatMap(userId -> userCommunityShipReactiveRepository.deleteByUserIdAndCommunityId(userId, communityId));
-//        return userCommunityShipReactiveRepository.deleteByUserIdAndCommunityId(UserContext.getUserId(), communityId);
+                .flatMap(userId ->
+                        userCommunityShipReactiveRepository.deleteByUserIdAndCommunityId(userId, communityId)
+                                .then(
+                                        userCommunityShipReactiveRepository.findAllByCommunityId(communityId)
+                                                .collectList()
+                                                .flatMap(shipList -> {
+                                                    if (shipList.isEmpty()) {
+
+                                                        kafkaTemplate.send(topicName, String.valueOf(communityId));
+                                                    }
+                                                    return Mono.empty();
+                                                })
+                                )
+                );
     }
 }

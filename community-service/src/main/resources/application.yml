@@ -25,6 +25,7 @@ spring:
 app:
   kafka:
     kafkaEventTopic: community-save-event-topic
+    kafkaEventDeleteTopic: community-delete-event-topic
     #    kafkaAccountRegistrationEventTopic: account-events-topic
     kafkaEventGroupId: community-save-event-group-id
 
