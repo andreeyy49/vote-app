@@ -8,5 +8,6 @@
     <file url="file://$PROJECT_DIR$/membership-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/social-network-auth/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/users-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/voting-service/src/main/java" charset="UTF-8" />
   </component>
 </project>

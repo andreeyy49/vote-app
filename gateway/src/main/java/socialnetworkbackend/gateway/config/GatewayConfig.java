@@ -15,6 +15,7 @@ public class GatewayConfig {
                 .route("users-service", r -> r.path("/api/v1/user/**").uri("lb://users-service"))
                 .route("community-service", r -> r.path("/api/v1/community/**").uri("lb://community-service"))
                 .route("membership-service", r -> r.path("/api/v1/membership/**").uri("lb://membership-service"))
+                .route("voting-service", r -> r.path("/api/v1/voting/**").uri("lb://voting-service"))
                 .build();
     }
 }

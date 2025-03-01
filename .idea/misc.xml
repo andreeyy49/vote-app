@@ -11,6 +11,7 @@
         <option value="$PROJECT_DIR$/gateway/pom.xml" />
         <option value="$PROJECT_DIR$/community-service/pom.xml" />
         <option value="$PROJECT_DIR$/membership-service/pom.xml" />
+        <option value="$PROJECT_DIR$/voting-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
