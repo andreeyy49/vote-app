@@ -20,7 +20,7 @@ public class Voting {
     private String title;
     private String description;
     private Map<String, Integer> choices;  // Варианты голосования
-    private Map<String, UUID> castVote; // Кто как проголосовал (userId -> выбор)
+    private Map<String, String> castVote; // Кто как проголосовал (userId -> выбор)
     private Long communityId;
     private boolean isPublished;
 

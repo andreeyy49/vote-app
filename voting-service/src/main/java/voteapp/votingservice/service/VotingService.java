@@ -42,7 +42,7 @@ public class VotingService {
         return UserContext.getUserId()
                 .flatMap(userId -> findById(voteRequest.getVoteId())
                         .flatMap(vote -> {
-                            vote.getCastVote().put(voteRequest.getChoice(), userId);
+                            vote.getCastVote().put(voteRequest.getChoice(), String.valueOf(userId));
                             vote.getChoices().computeIfPresent(voteRequest.getChoice(), (k, v) -> v + 1);
                             return votingRepository.save(vote);
                         }));
