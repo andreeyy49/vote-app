@@ -38,7 +38,7 @@ public class VotingController {
     }
 
     @PutMapping("/publishVote/{voteId}")
-    public Mono<UpdateResult> publishVote(@PathVariable String voteId) {
+    public Mono<Void> publishVote(@PathVariable String voteId) {
         return service.publishVote(voteId);
     }
 

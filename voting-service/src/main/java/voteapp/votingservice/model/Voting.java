@@ -7,7 +7,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
-import java.util.UUID;
 
 @Document(collection = "votes")
 @Data
@@ -22,6 +21,6 @@ public class Voting {
     private Map<String, Integer> choices;  // Варианты голосования
     private Map<String, String> castVote; // Кто как проголосовал (userId -> выбор)
     private Long communityId;
-    private boolean isPublished;
+    private boolean published;
 
 }

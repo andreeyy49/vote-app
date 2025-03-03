@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import voteapp.communityservice.dto.CommunityEvent;
+import voteapp.communityservice.dto.ModeratorRequest;
 import voteapp.communityservice.model.Community;
 import voteapp.communityservice.repository.CommunityRepository;
 import voteapp.communityservice.util.UserContext;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -77,5 +79,33 @@ public class CommunityService {
 
     public Boolean findByTitle(String title) {
         return communityRepository.findByTitle(title) != null;
+    }
+
+    public Boolean isAdmin() {
+        return communityRepository.existsByAdmin(UserContext.getUserId());
+    }
+
+    public Boolean isModerator() {
+        return communityRepository.existsByModeratorsContains(UserContext.getUserId());
+    }
+
+    public List<Community> findAllByModeratorsContains() {
+        return communityRepository.findAllByModeratorsContains(UserContext.getUserId());
+    }
+
+    public List<Community> findAllByAdmin() {
+        return communityRepository.findAllByAdmin(UserContext.getUserId());
+    }
+
+    public void createModerator(ModeratorRequest moderatorRequest) {
+        Community community = findById(moderatorRequest.getCommunityId());
+        community.getModerators().add(UUID.fromString(moderatorRequest.getUserId()));
+        update(community);
+    }
+
+    public void removeModerator(ModeratorRequest moderatorRequest) {
+        Community community = findById(moderatorRequest.getCommunityId());
+        community.getModerators().remove(UUID.fromString(moderatorRequest.getUserId()));
+        update(community);
     }
 }

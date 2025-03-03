@@ -1,6 +1,5 @@
 package voteapp.votingservice.service;
 
-import com.mongodb.client.result.UpdateResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -48,10 +47,10 @@ public class VotingService {
                         }));
     }
 
-    public Mono<UpdateResult> publishVote(String voteId) {
+    public Mono<Void> publishVote(String voteId) {
         Query query = Query.query(Criteria.where("_id").is(voteId));
-        Update update = new Update().set("isPublished", true);
-        return mongoTemplate.updateFirst(query, update, Voting.class);
+        Update update = new Update().set("published", true);
+        return mongoTemplate.updateFirst(query, update, Voting.class).then();
     }
 
     public Mono<Void> deleteVote(String voteId) {

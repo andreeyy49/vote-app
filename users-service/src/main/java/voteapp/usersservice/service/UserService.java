@@ -46,5 +46,9 @@ public class UserService {
     public void deleteById(UUID id) {
         userRepository.deleteById(id);
     }
+
+    public List<User> findAllByIds(List<UUID> id) {
+        return userRepository.findAllById(id);
+    }
 }
 

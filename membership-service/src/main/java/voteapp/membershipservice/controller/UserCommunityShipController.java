@@ -30,6 +30,11 @@ public class UserCommunityShipController {
                 .doOnError(e -> log.error("Error occurred while fetching data"));
     }
 
+    @GetMapping("/findAllByCommunityId/{communityId}")
+    public Flux<UserCommunityShip> findAllByCommunityId(@PathVariable Long communityId) {
+        return userCommunityShipService.findAllByCommunityId(communityId);
+    }
+
     @PostMapping("/{communityId}")
     public Mono<UserCommunityShip> create(@PathVariable Long communityId) {
         return userCommunityShipService.save(communityId);

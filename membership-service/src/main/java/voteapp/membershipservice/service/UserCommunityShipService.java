@@ -73,4 +73,8 @@ public class UserCommunityShipService {
                                 )
                 );
     }
+
+    public Flux<UserCommunityShip> findAllByCommunityId(Long communityId) {
+        return userCommunityShipReactiveRepository.findAllByCommunityId(communityId);
+    }
 }
