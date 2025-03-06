@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="Andrei">
+        <sqlFile path="db/changelog/V1__create_city_table.sql"/>
+    </changeSet>
+
+    <changeSet id="2" author="Andrei">
+        <sqlFile path="db/changelog/V2__create_image_table_and_user_table.sql"/>
+    </changeSet>
+
+    <changeSet id="3" author="Andrei">
+        <sqlFile path="db/changelog/V3__edit_id_in_users_table.sql"/>
+    </changeSet>
+
+    <changeSet id="4" author="Andrei">
+        <sqlFile path="db/changelog/V4__create_table_users_image.sql"/>
+    </changeSet>
+
+    <changeSet id="5" author="Andrei">
+        <sqlFile path="db/changelog/V5__create_index_hash_in_image_table.sql"/>
+    </changeSet>
+
+    <changeSet id="6" author="Andrei">
+        <sqlFile path="db/changelog/V6__rename_users_table.sql"/>
+    </changeSet>
+
+    <changeSet id="7" author="Andrei">
+        <sqlFile path="db/changelog/V7__rename_column_in_authors_images_tables.sql"/>
+    </changeSet>
+
+    <changeSet id="8" author="Andrei">
+        <sqlFile path="db/changelog/V8__create_index_country_id_in_city_table.sql"/>
+    </changeSet>
+
+    <changeSet id="9" author="Andrei">
+        <sqlFile path="db/changelog/V9__add_country_table.sql"/>
+    </changeSet>
+
+    <changeSet id="10" author="Andrei">
+        <sqlFile path="db/changelog/V10__remove_author_table.sql"/>
+    </changeSet>
+</databaseChangeLog>

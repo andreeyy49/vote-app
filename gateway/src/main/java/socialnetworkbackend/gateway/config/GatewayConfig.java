@@ -16,6 +16,9 @@ public class GatewayConfig {
                 .route("community-service", r -> r.path("/api/v1/community/**").uri("lb://community-service"))
                 .route("membership-service", r -> r.path("/api/v1/membership/**").uri("lb://membership-service"))
                 .route("voting-service", r -> r.path("/api/v1/voting/**").uri("lb://voting-service"))
+                .route("geo-storage-service", r -> r.path("/api/v1/dashboard/**").uri("lb://geo-storage-service"))
+                .route("geo-storage-service", r -> r.path("/api/v1/geo/country/**").uri("lb://geo-storage-service"))
+                .route("geo-storage-service", r -> r.path("/api/v1/storage/**").uri("lb://geo-storage-service"))
                 .build();
     }
 }

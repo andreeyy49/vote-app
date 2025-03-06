@@ -1,0 +1,7 @@
+CREATE TABLE countries
+(
+    id    BIGSERIAL PRIMARY KEY,
+    title VARCHAR(255)
+);
+
+ALTER TABLE city ADD FOREIGN KEY (country_id) REFERENCES countries(id) ON DELETE CASCADE;

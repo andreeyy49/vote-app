@@ -1,0 +1,1 @@
+CREATE INDEX idx_image_hash ON image (hash);

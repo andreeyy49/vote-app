@@ -1,0 +1,1 @@
+CREATE INDEX idx_country_id ON city (country_id);

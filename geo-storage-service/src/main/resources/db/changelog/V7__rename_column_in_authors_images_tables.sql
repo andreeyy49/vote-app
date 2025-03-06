@@ -1,0 +1,1 @@
+ALTER TABLE authors_images RENAME COLUMN user_id TO author_id;

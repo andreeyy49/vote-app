@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loginContainer">
+    <h1>Login</h1>
+    <form id="loginForm">
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+<div id="dataContainer" style="display: none;">
+    <h1>Files</h1>
+
+    <!-- Кнопки размещены здесь -->
+    <button id="refreshButton">Refresh Data</button>
+    <button id="removeImagesButton">Remove Unused Images</button>
+
+    <!-- Таблица с файлами -->
+    <table id="file-table">
+        <thead>
+        <tr>
+            <th>File</th>
+            <th>Size (bytes)</th>
+            <th>Last Modified</th>
+            <th>Count</th>
+            <th>URL</th>
+        </tr>
+        </thead>
+        <tbody id="file-list"></tbody>
+    </table>
+</div>
+
+<script>
+    // Логин и сохранение токена
+    document.getElementById("loginForm").onsubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+
+        const response = await fetch('/api/v1/dashboard/login', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams(formData),
+        });
+
+        if (response.ok) {
+            const data = await response.json(); // Сервер возвращает токен
+            localStorage.setItem("authToken", data.accessToken);
+            document.getElementById("loginContainer").style.display = "none";
+            document.getElementById("dataContainer").style.display = "block";
+            loadFiles(); // Загрузить файлы при успешном логине
+        } else {
+            alert("Login failed");
+        }
+    };
+
+    // Загрузка списка файлов
+    async function loadFiles() {
+        const token = localStorage.getItem("authToken");
+
+        const response = await fetch('/api/v1/dashboard/statics', {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + token,
+            },
+        });
+
+        if (response.ok) {
+            const files = await response.json(); // Список файлов
+            const tableBody = document.getElementById("file-list");
+            tableBody.innerHTML = ""; // Очистка таблицы перед новой загрузкой
+
+            files.forEach((file, index) => {
+                const row = document.createElement("tr");
+
+                // Создание ячеек для каждого поля файла
+                const fileNameCell = document.createElement("td");
+                fileNameCell.textContent = `File ${index + 1}`; // Имя файла, использую индекс как уникальное имя
+
+                const fileSizeCell = document.createElement("td");
+                fileSizeCell.textContent = file.size;
+
+                const lastModifiedCell = document.createElement("td");
+                const formattedDate = new Date(file.lastModified).toLocaleString('en-US', {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    timeZoneName: 'short',
+                });
+                lastModifiedCell.textContent = formattedDate;
+
+                const countCell = document.createElement("td");
+                countCell.textContent = file.count;
+
+                const urlCell = document.createElement("td");
+                const link = document.createElement("a");
+                link.href = file.url;
+                link.textContent = "View File";
+                link.target = "_blank";
+                urlCell.appendChild(link);
+
+                // Добавление ячеек в строку
+                row.appendChild(fileNameCell);
+                row.appendChild(fileSizeCell);
+                row.appendChild(lastModifiedCell);
+                row.appendChild(countCell);
+                row.appendChild(urlCell);
+
+                // Добавление строки в таблицу
+                tableBody.appendChild(row);
+            });
+        } else {
+            alert("Failed to load files");
+        }
+    }
+
+    // Обновление данных
+    document.getElementById("refreshButton").onclick = async () => {
+        await loadFiles();
+        alert("Data refreshed successfully!");
+    };
+
+    // Удаление неиспользуемых изображений
+    document.getElementById("removeImagesButton").onclick = async () => {
+        const token = localStorage.getItem("authToken");
+
+        const response = await fetch('/api/v1/dashboard/removeNoUsageImage', {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + token,
+            },
+        });
+
+        if (response.ok) {
+            const files = await response.json(); // Обновлённый список файлов
+            const tableBody = document.getElementById("file-list");
+            tableBody.innerHTML = ""; // Очистка таблицы перед новой загрузкой
+
+            files.forEach((file, index) => {
+                const row = document.createElement("tr");
+
+                const fileNameCell = document.createElement("td");
+                fileNameCell.textContent = `File ${index + 1}`; // Имя файла
+
+                const fileSizeCell = document.createElement("td");
+                fileSizeCell.textContent = file.size;
+
+                const lastModifiedCell = document.createElement("td");
+                const formattedDate = new Date(file.lastModified).toLocaleString('en-US', {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    timeZoneName: 'short',
+                });
+                lastModifiedCell.textContent = formattedDate;
+
+                const countCell = document.createElement("td");
+                countCell.textContent = file.count;
+
+                const urlCell = document.createElement("td");
+                const link = document.createElement("a");
+                link.href = file.url;
+                link.textContent = "View File";
+                link.target = "_blank";
+                urlCell.appendChild(link);
+
+                // Добавление ячеек в строку
+                row.appendChild(fileNameCell);
+                row.appendChild(fileSizeCell);
+                row.appendChild(lastModifiedCell);
+                row.appendChild(countCell);
+                row.appendChild(urlCell);
+
+                // Добавление строки в таблицу
+                tableBody.appendChild(row);
+            });
+            alert("Unused images removed successfully!");
+        } else {
+            alert("Failed to remove unused images");
+        }
+    };
+</script>
+
+</body>
+</html>

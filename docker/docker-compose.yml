@@ -163,7 +163,16 @@ services:
     networks:
       - vote-app-network
 
-
+  geo-storage-service:
+    image: geo-storage-service
+    container_name: geo-storage-service
+    depends_on:
+      - discovery-app
+      - postgres
+    env_file:
+      - .env
+    networks:
+      - vote-app-network
 
 networks:
   vote-app-network:
