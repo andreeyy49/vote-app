@@ -26,4 +26,9 @@ public class StorageController {
     public void remove(@RequestParam("linkToDelete") String linkToDelete) {
         s3StorageService.removeImage(linkToDelete);
     }
+
+    @GetMapping
+    public boolean checkConnection() {
+        return s3StorageService.checkBucketConnection();
+    }
 }

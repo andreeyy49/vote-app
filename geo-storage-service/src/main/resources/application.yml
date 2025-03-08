@@ -8,11 +8,17 @@ spring:
   datasource:
     url: jdbc:postgresql://postgres:5432/vote_app_geo_storage_db
     username: postgres
-    password: rkljerkgjerhgperoewkgreoierpgrelil
+    password: postgres
     driver-class-name: org.postgresql.Driver
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.xml
+  data:
+    redis:
+      host: redis
+      port: 6379
+      timeout: 60000
+      password: password
 
 external-api:
   hhUrl: "https://api.hh.ru/areas"

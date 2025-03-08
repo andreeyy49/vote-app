@@ -18,6 +18,9 @@ public class S3Config {
     @Value("${aws.secret-key}")
     private String secretKey;
 
+    @Value("${aws.baseUrl}")
+    private String baseUrl;
+
     @Bean
     public AmazonS3 s3Client() {
         AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
@@ -26,7 +29,7 @@ public class S3Config {
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withEndpointConfiguration(
                         new AmazonS3ClientBuilder.EndpointConfiguration(
-                                "storage.yandexcloud.net","us-east-1"
+                                baseUrl,"ru-central1-a"
                         )
                 )
                 .build();

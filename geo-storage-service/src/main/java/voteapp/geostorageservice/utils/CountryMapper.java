@@ -26,9 +26,7 @@ public class CountryMapper {
     }
 
     public static CountryDto countryToCountryDto(Country country) {
-        CountryDto countryDto = new CountryDto();
-        countryDto.setId(country.getId());
-        countryDto.setTitle(country.getTitle());
+        CountryDto countryDto = countryToCountryDtoWithoutCities(country);
         if (!country.getCities().isEmpty()) {
             countryDto.setCities(country.getCities().stream().map(dto -> {
                 CityDto cityDto = new CityDto();
@@ -38,6 +36,14 @@ public class CountryMapper {
                 return cityDto;
             }).toList());
         }
+
+        return countryDto;
+    }
+
+    public static CountryDto countryToCountryDtoWithoutCities(Country country) {
+        CountryDto countryDto = new CountryDto();
+        countryDto.setId(country.getId());
+        countryDto.setTitle(country.getTitle());
 
         return countryDto;
     }

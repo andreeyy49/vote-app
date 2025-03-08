@@ -1,5 +1,6 @@
 package voteapp.geostorageservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
@@ -23,8 +24,9 @@ public class Country {
     @Column(name = "title")
     private String title;
 
-    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @BatchSize(size = 100)
+    @JsonIgnore
     private List<City> cities = new ArrayList<>();
 
     @Override

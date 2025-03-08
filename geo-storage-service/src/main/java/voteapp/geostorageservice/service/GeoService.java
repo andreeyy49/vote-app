@@ -27,10 +27,18 @@ public class GeoService {
     private final HhClient hhClient;
     private final CityService cityService;
     private final CountryService countryService;
+    private final RedisCountryService redisCountryService;
+    private final RedisCityService redisCityService;
 
     public List<CountryDto> findAllCountries() {
-        List<Country> countries = countryService.findAll();
-        return countries.stream().map(CountryMapper::countryToCountryDto).toList();
+        List<Country> countries;
+        countries = redisCountryService.getAllCountries();
+
+        if(countries == null || countries.isEmpty()) {
+            countries = countryService.findAll();
+        }
+
+        return countries.stream().map(CountryMapper::countryToCountryDtoWithoutCities).toList();
     }
 
     private List<CountryDto> initAllCountries() {
@@ -55,7 +63,13 @@ public class GeoService {
     }
 
     public List<CityDto> findAllCitiesInCountry(Long countryId) {
-        return cityService.findByCountryId(countryId).stream().map(CityMapper::cityToCityDto).toList();
+        List<CityDto> citiesDto = redisCityService.getCitiesByCountryId(countryId);
+
+        if(citiesDto == null || citiesDto.isEmpty()) {
+            return cityService.findByCountryId(countryId).stream().map(CityMapper::cityToCityDto).toList();
+        }
+
+        return citiesDto;
     }
 
     private List<CityDto> areaDtoToListCityDto(AreaDto parentAreaDto) {
@@ -96,17 +110,22 @@ public class GeoService {
                         Collectors.mapping(dto -> CityMapper.cityDtoToCity(dto, null), Collectors.toList())
                 ));
 
+        redisCityService.clearCache();
+        redisCountryService.clearCache();
+
         // Создаем список стран и подготовляем их для пакетного сохранения
         List<Country> countries = countriesDto.stream()
                 .map(dto -> {
                     Country country = CountryMapper.countryDtoToCountry(dto);
                     List<City> citiesForCountry = countryCitiesMap.getOrDefault(dto.getId(), new ArrayList<>());
                     citiesForCountry.forEach(city -> city.setCountry(country));
+                    redisCityService.batchSave(citiesForCountry);
                     country.setCities(citiesForCountry);
                     return country;
                 })
                 .toList();
 
         countryService.saveAll(countries);
+        redisCountryService.batchSave(countries);
     }
 }

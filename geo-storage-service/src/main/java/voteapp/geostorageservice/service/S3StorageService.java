@@ -40,6 +40,30 @@ public class S3StorageService {
 
     private final ImageService imageService;
 
+    /**
+     * Проверяет подключение к бакету.
+     *
+     * @return true, если подключение успешно, иначе false.
+     */
+    public boolean checkBucketConnection() {
+        try {
+            // Пытаемся получить список объектов в бакете
+            ObjectListing objectListing = s3Client.listObjects(bucket);
+            log.info("Подключение к бакету успешно! Количество объектов: {}", objectListing.getObjectSummaries().size());
+            return true;
+        } catch (AmazonS3Exception e) {
+            // Обрабатываем ошибку
+            log.error("Ошибка при подключении к бакету: {}", e.getMessage());
+            log.error("Код ошибки: {}", e.getErrorCode());
+            log.error("Статус код: {}", e.getStatusCode());
+            return false;
+        } catch (Exception e) {
+            // Обрабатываем другие исключения
+            log.error("Произошла ошибка: {}", e.getMessage());
+            return false;
+        }
+    }
+
     public ImageFileDto uploadImage(MultipartFile file) {
         byte[] bytes;
         String base64String;
@@ -76,9 +100,12 @@ public class S3StorageService {
                 metadata
         );
 
-        s3Client.putObject(request);
-        s3Client.setObjectAcl(bucket, imageId, CannedAccessControlList.PublicRead);
-
+        try {
+            s3Client.putObject(request);
+            s3Client.setObjectAcl(bucket, imageId, CannedAccessControlList.PublicRead);
+        } catch (AmazonS3Exception e) {
+            log.error("S3client!!! {} in uploadImage", e.getMessage());
+        }
         return new ImageFileDto(getFullUrl(imageId));
     }
 
