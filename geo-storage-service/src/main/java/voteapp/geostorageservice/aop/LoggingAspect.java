@@ -1,12 +1,14 @@
 package voteapp.geostorageservice.aop;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,15 +26,9 @@ public class LoggingAspect {
 
     private LoggingLevel level;
 
-    private final HttpServletRequest request;
-
     private String beforeLog = ">> method:{}({}) uri:{} class:{}";
 
     private String afterLog = "<< method:{}({}):{}ms uri:{} class:{}";
-
-    LoggingAspect(HttpServletRequest request) {
-        this.request = request;
-    }
 
     @Before(value = "@within(logging)", argNames = "joinPoint,logging")
     public void log(JoinPoint joinPoint, Logging logging) {
@@ -69,41 +65,30 @@ public class LoggingAspect {
     }
 
     private void printLog(List<Object> argList, boolean isBefore) {
-        switch (level) {
-            case ERROR: {
-                if (isBefore) {
-                    log.error(beforeLog, methodName, argList, request.getRequestURI(), className);
-                } else {
-                    log.error(afterLog, methodName, argList, System.currentTimeMillis() - startTime, request.getRequestURI(), className);
-                }
-                break;
-            }
+        String requestUri = getRequestUriSafe();
 
-            case INFO: {
-                if (isBefore) {
-                    log.info(beforeLog, methodName, argList, request.getRequestURI(), className);
-                } else {
-                    log.info(afterLog, methodName, argList, System.currentTimeMillis() - startTime, request.getRequestURI(), className);
-                }
-                break;
+        if (isBefore) {
+            switch (level) {
+                case ERROR -> log.error(beforeLog, methodName, argList, requestUri, className);
+                case INFO -> log.info(beforeLog, methodName, argList, requestUri, className);
+                case DEBUG -> log.debug(beforeLog, methodName, argList, requestUri, className);
+                case WARNING -> log.warn(beforeLog, methodName, argList, requestUri, className);
             }
-
-            case DEBUG: {
-                if (isBefore) {
-                    log.debug(beforeLog, methodName, argList, request.getRequestURI(), className);
-                } else {
-                    log.debug(afterLog, methodName, argList, System.currentTimeMillis() - startTime, request.getRequestURI(), className);
-                }
-                break;
+        } else {
+            switch (level) {
+                case ERROR -> log.error(afterLog, methodName, argList, System.currentTimeMillis() - startTime, requestUri, className);
+                case INFO -> log.info(afterLog, methodName, argList, System.currentTimeMillis() - startTime, requestUri, className);
+                case DEBUG -> log.debug(afterLog, methodName, argList, System.currentTimeMillis() - startTime, requestUri, className);
+                case WARNING -> log.warn(afterLog, methodName, argList, System.currentTimeMillis() - startTime, requestUri, className);
             }
-
-            case WARNING:
-                if (isBefore) {
-                    log.warn(beforeLog, methodName, argList, request.getRequestURI(), className);
-                } else {
-                    log.warn(afterLog, methodName, argList, System.currentTimeMillis() - startTime, request.getRequestURI(), className);
-                }
-                break;
         }
+    }
+
+    private String getRequestUriSafe() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes instanceof ServletRequestAttributes servletRequestAttributes) {
+            return servletRequestAttributes.getRequest().getRequestURI();
+        }
+        return "N/A";
     }
 }
