@@ -24,4 +24,9 @@ public class UserController {
     public List<User> findAllByIds(@RequestBody List<UUID> ids) {
         return userService.findAllByIds(ids);
     }
+
+    @PutMapping("/update")
+    public User update(@RequestBody User user) {
+        return userService.update(user);
+    }
 }

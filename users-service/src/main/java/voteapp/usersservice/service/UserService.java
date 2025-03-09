@@ -31,12 +31,16 @@ public class UserService {
         return findById(UserContext.getUserId());
     }
 
-    public User update(User user, UUID id) {
-        User existingUser = findById(id);
+    public User update(User user) {
+        User existingUser = findById(UserContext.getUserId());
 
         if (existingUser != null) {
             existingUser.setName(user.getName());
             existingUser.setEmail(user.getEmail());
+            existingUser.setPhone(user.getPhone());
+            existingUser.setCity(user.getCity());
+            existingUser.setCountry(user.getCountry());
+            existingUser.setPhoto(user.getPhoto());
             return save(existingUser);
         }
 

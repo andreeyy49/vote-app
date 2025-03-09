@@ -21,4 +21,16 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "photo")
+    private String photo;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "country")
+    private String country;
+
+    @Column(name = "phone")
+    private String phone;
+
 }
