@@ -1,4 +1,4 @@
-package voteapp.votingservice.config;
+package vote_app.notification_service.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

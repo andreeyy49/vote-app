@@ -15,10 +15,10 @@ spring:
 
 app:
   kafka:
-    kafkaEventTopic: community-save-event-topic
-    kafkaEventDeleteTopic: community-delete-event-topic
-    #    kafkaAccountRegistrationEventTopic: account-events-topic
-    kafkaEventGroupId: community-save-event-group-id
+    notificationEventTopic: notification-to-community-send-event-topic
+    notificationEventGroupId: notification-send-event-group-id
+    communityModerationEventTopic: community-moderation-event-topic
+    membershipEventTopic: membership-event-topic
 
 external-api:
   authServiceUrl: "gateway:8080/api/v1/auth"

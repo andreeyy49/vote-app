@@ -8,6 +8,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import voteapp.communityservice.dto.CommunityEvent;
 import voteapp.communityservice.dto.ModeratorRequest;
+import voteapp.communityservice.dto.NotificationEventDto;
 import voteapp.communityservice.model.Community;
 import voteapp.communityservice.repository.CommunityRepository;
 import voteapp.communityservice.util.UserContext;
@@ -20,7 +21,10 @@ import java.util.UUID;
 public class CommunityService {
 
     @Value("${app.kafka.kafkaEventTopic}")
-    private String topic;
+    private String kafkaEventTopic;
+
+    @Value("${app.kafka.notificationEventTopic}")
+    private String notificationEventTopic;
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
@@ -53,7 +57,7 @@ public class CommunityService {
             throw new RuntimeException(e);
         }
 
-        kafkaTemplate.send(topic, mappedEvent);
+        kafkaTemplate.send(kafkaEventTopic, mappedEvent);
 
         return community;
     }
@@ -101,11 +105,37 @@ public class CommunityService {
         Community community = findById(moderatorRequest.getCommunityId());
         community.getModerators().add(UUID.fromString(moderatorRequest.getUserId()));
         update(community);
+
+        NotificationEventDto notificationEventDto = new NotificationEventDto();
+        notificationEventDto.setUserId(UserContext.getUserId());
+        notificationEventDto.setTitle("Модерация!");
+        notificationEventDto.setBody("Вы стали модератором!");
+
+        String mappedEvent;
+        try {
+            mappedEvent = objectMapper.writeValueAsString(notificationEventDto);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        kafkaTemplate.send(notificationEventTopic, mappedEvent);
     }
 
     public void removeModerator(ModeratorRequest moderatorRequest) {
         Community community = findById(moderatorRequest.getCommunityId());
         community.getModerators().remove(UUID.fromString(moderatorRequest.getUserId()));
         update(community);
+
+        NotificationEventDto notificationEventDto = new NotificationEventDto();
+        notificationEventDto.setUserId(UserContext.getUserId());
+        notificationEventDto.setTitle("Модерация!");
+        notificationEventDto.setBody("Вы перестали быть модератором!");
+
+        String mappedEvent;
+        try {
+            mappedEvent = objectMapper.writeValueAsString(notificationEventDto);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        kafkaTemplate.send(notificationEventTopic, mappedEvent);
     }
 }

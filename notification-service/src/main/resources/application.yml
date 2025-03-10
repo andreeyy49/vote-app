@@ -1,17 +1,15 @@
 spring:
   application:
-    name: membership-service
-
+    name: notification-service
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
   datasource:
-    url: jdbc:postgresql://postgres:5432/vote_app_user_community_ship_db
+    url: jdbc:postgresql://postgres:5432/vote_app_notification_db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-
-  r2dbc:
-    url: r2dbc:postgresql://postgres:5432/vote_app_user_community_ship_db
-    username: postgres
-    password: postgres
 
   liquibase:
     enabled: true
@@ -20,17 +18,9 @@ spring:
   kafka:
     bootstrap-servers: kafka:9092
 
-  main:
-    web-application-type: reactive
-    allow-bean-definition-overriding: true
-
 app:
   kafka:
-    kafkaEventTopic: community-save-event-topic
-    kafkaEventDeleteTopic: community-delete-event-topic
-    membershipEventTopic: membership-event-topic
     notificationEventTopic: notification-send-event-topic
-    kafkaEventGroupId: community-save-event-group-id
     notificationEventGroupId: notification-send-event-group-id
 
 external-api:

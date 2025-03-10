@@ -19,6 +19,7 @@ public class GatewayConfig {
                 .route("geo-storage-service", r -> r.path("/api/v1/dashboard/**").uri("lb://geo-storage-service"))
                 .route("geo-storage-service", r -> r.path("/api/v1/geo/country/**").uri("lb://geo-storage-service"))
                 .route("geo-storage-service", r -> r.path("/api/v1/storage/**").uri("lb://geo-storage-service"))
+                .route("notification-service", r -> r.path("/api/v1/notification/**").uri("lb://notification-service"))
                 .build();
     }
 }

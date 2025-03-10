@@ -5,9 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import voteapp.membershipservice.dto.CommunityEvent;
+import voteapp.membershipservice.dto.NotificationEventDto;
 import voteapp.membershipservice.model.UserCommunityShip;
 import voteapp.membershipservice.repository.UserCommunityShipReactiveRepository;
 
@@ -20,6 +23,13 @@ public class CommunityEventListener {
     private final ObjectMapper objectMapper;
 
     private final UserCommunityShipReactiveRepository repository;
+
+    private final UserCommunityShipService service;
+
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
+    @Value("${app.kafka.notificationEventTopic}")
+    private String notificationTopic;
 
     @KafkaListener(topics = "${app.kafka.kafkaEventTopic}", groupId = "${app.kafka.kafkaEventGroupId}")
     public void handleUserCreated(ConsumerRecord<String, String> record) {
@@ -41,5 +51,32 @@ public class CommunityEventListener {
         } catch (JsonProcessingException e) {
             log.error("Ошибка десериализации Kafka-сообщения", e);
         }
+    }
+
+    @KafkaListener(topics = "${app.kafka.membershipEventTopic}", groupId = "${app.kafka.notificationEventGroupId}")
+    public void handleNotification(ConsumerRecord<String, String> record) {
+        log.info("Received message: {}", record.value());
+        Long communityId = Long.parseLong(record.value());
+
+        service.findAllByCommunityId(communityId)
+                .map(UserCommunityShip::getUserId)
+                .doOnNext(userId -> {
+
+                    NotificationEventDto notificationEvent = new NotificationEventDto();
+                    notificationEvent.setUserId(userId);
+                    notificationEvent.setTitle("Проголосуйте!");
+                    notificationEvent.setBody("Добавлено новое голосование");
+
+                    String mappedEvent;
+
+                    try {
+                        mappedEvent = objectMapper.writeValueAsString(notificationEvent);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    kafkaTemplate.send(notificationTopic, mappedEvent);
+                })
+                .subscribe();
     }
 }
