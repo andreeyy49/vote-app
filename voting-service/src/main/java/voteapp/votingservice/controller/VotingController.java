@@ -1,6 +1,5 @@
 package voteapp.votingservice.controller;
 
-import com.mongodb.client.result.UpdateResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -20,6 +19,16 @@ public class VotingController {
     @PostMapping("/findAllByCommunityIdAndPublished")
     public Flux<Voting> findAllByCommunityIdAndPublished(@RequestBody FindVoteRequest findVoteRequest) {
         return service.findAllByCommunityIdAndPublished(findVoteRequest);
+    }
+
+    @GetMapping("/findAllByUserNotVoted/{communityId}")
+    public Flux<Voting> findAllByCommunityIdAndUserNotVoted(@PathVariable Long communityId) {
+        return service.findAllByCommunityIdAndUserNotVoted(communityId);
+    }
+
+    @GetMapping("/findAllByUserVoted/{communityId}")
+    public Flux<Voting> findAllByCommunityIdAndUserVoted(@PathVariable Long communityId) {
+        return service.findAllByCommunityIdAndUserVoted(communityId);
     }
 
     @GetMapping("/{id}")

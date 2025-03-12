@@ -27,7 +27,7 @@ public class Community {
 
     private UUID admin;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "community_moderators", joinColumns = @JoinColumn(name = "community_id"))
     @Column(name = "moderator_id")
     private List<UUID> moderators;

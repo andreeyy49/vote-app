@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - vote-app-network
 
@@ -190,3 +190,5 @@ networks:
 
 volumes:
   mongo_data:
+  postgres-data:
+    driver: local

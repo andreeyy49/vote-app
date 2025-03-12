@@ -4,8 +4,10 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class FcmNotificationService {
 
@@ -25,6 +27,7 @@ public class FcmNotificationService {
         try {
             // Отправляем сообщение через FCM
             String response = FirebaseMessaging.getInstance().send(message);
+            log.info("FCM response: {}", response);
             return response; // ID сообщения
         } catch (FirebaseMessagingException e) {
             e.printStackTrace();

@@ -14,6 +14,7 @@ import voteapp.votingservice.dto.CastVoteRequest;
 import voteapp.votingservice.dto.FindVoteRequest;
 import voteapp.votingservice.model.Voting;
 import voteapp.votingservice.repository.VotingRepository;
+import voteapp.votingservice.repository.VotingRepositoryImpl;
 import voteapp.votingservice.util.UserContext;
 
 @Service
@@ -22,11 +23,13 @@ public class VotingService {
 
     private final VotingRepository votingRepository;
 
+    private final VotingRepositoryImpl votingRepositoryImpl;
+
     private final ReactiveMongoTemplate mongoTemplate;
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @Value("${app.kafka.membershipEventTopic}}")
+    @Value("${app.kafka.membershipEventTopic}")
     private String membershipEventTopic;
 
     @Value("${app.kafka.communityModerationEventTopic}")
@@ -70,6 +73,18 @@ public class VotingService {
                     kafkaTemplate.send(membershipEventTopic, String.valueOf(voting.getCommunityId()));
                     return Mono.empty();
                 });
+    }
+
+    public Flux<Voting> findAllByCommunityIdAndUserNotVoted(Long communityId) {
+        return UserContext.getUserId().flatMapMany(userId ->
+                        votingRepositoryImpl.findNotVotedByCommunityAndUser(communityId, String.valueOf(userId))
+                );
+    }
+
+    public Flux<Voting> findAllByCommunityIdAndUserVoted(Long communityId) {
+        return UserContext.getUserId().flatMapMany(userId ->
+                votingRepositoryImpl.findVotedByCommunityAndUser(communityId, String.valueOf(userId))
+        );
     }
 
     public Mono<Void> deleteVote(String voteId) {

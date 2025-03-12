@@ -1,5 +1,6 @@
 package vote_app.notification_service.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class UserFCMShip {
 
     @Id
+    @Column(name = "id")
     private UUID userId;
 
     private String token;
