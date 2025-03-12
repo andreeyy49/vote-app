@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".voting.AddVotingActivity">
+
+    <Spinner
+        android:id="@+id/community_spn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/purple_200"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Название голосования"
+        android:id="@+id/voting_name"
+        android:layout_margin="20dp"
+        android:layout_below="@id/community_spn"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Описание голосования"
+        android:id="@+id/voting_body"
+        android:layout_below="@id/voting_name"
+        android:layout_margin="20dp"/>
+
+    <View
+        android:layout_width="10dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/scroll"
+        android:id="@+id/centerHorizontal"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="добавить вариант"
+        android:id="@+id/add_choice"
+        android:layout_above="@id/deleted_choice"
+        android:layout_alignStart="@+id/centerHorizontal"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@id/centerHorizontal"
+        android:layout_marginLeft="10dp"
+        app:cornerRadius="15dp"/>
+
+    <Button
+        android:id="@+id/deleted_choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Удалить вариант"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@id/centerHorizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        app:cornerRadius="15dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Отмена"
+        android:id="@+id/cansel"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@id/centerHorizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignTop="@id/deleted_choice"
+        app:cornerRadius="15dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Сохранить"
+        android:id="@+id/voting_save"
+        android:layout_above="@id/cansel"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@id/centerHorizontal"
+        android:layout_marginRight="10dp"
+        android:layout_alignTop="@id/add_choice"
+        app:cornerRadius="15dp"/>
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/voting_body"
+        android:layout_above="@+id/add_choice"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="20dp"
+        android:id="@+id/scroll">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_choices"
+            android:orientation="vertical"/>
+    </ScrollView>
+</RelativeLayout>

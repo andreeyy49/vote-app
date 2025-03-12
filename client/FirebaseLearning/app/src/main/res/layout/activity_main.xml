@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+<!--    <Button-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Добавить голосование"-->
+<!--        android:id="@+id/addVoting_btn"-->
+<!--        android:layout_below="@id/result_btn"-->
+<!--        app:cornerRadius="15dp"-->
+<!--        android:layout_margin="10dp"/>-->
+
+<!--    <Button-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Сообщества"-->
+<!--        android:id="@+id/community_btn"-->
+<!--        android:layout_below="@id/addVoting_btn"-->
+<!--        app:cornerRadius="15dp"-->
+<!--        android:layout_margin="10dp"/>-->
+
+<!--    <Button-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Выйти из аккаунта"-->
+<!--        android:id="@+id/logout_btn"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        app:cornerRadius="15dp"-->
+<!--        android:layout_margin="10dp"/>-->
+
+<!--    <Button-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Модерация"-->
+<!--        android:visibility="invisible"-->
+<!--        android:id="@+id/moderating_btn"-->
+<!--        android:layout_above="@id/logout_btn"-->
+<!--        app:cornerRadius="15dp"-->
+<!--        android:layout_margin="10dp"/>-->
+
+<!--    <Button-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Управление модераторами"-->
+<!--        android:id="@+id/admin_btn"-->
+<!--        android:layout_above="@id/moderating_btn"-->
+<!--        app:cornerRadius="15dp"-->
+<!--        android:visibility="invisible"-->
+<!--        android:layout_margin="10dp"/>-->
+
+<!--    <Button-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        app:cornerRadius="15dp"-->
+<!--        android:id="@+id/doVote_btn"-->
+<!--        android:text="Голосовать"-->
+<!--        android:layout_margin="10dp"/>-->
+
+<!--    <Button-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/result_btn"-->
+<!--        android:layout_below="@id/doVote_btn"-->
+<!--        app:cornerRadius="15dp"-->
+<!--        android:text="Результаты голосований"-->
+<!--        android:layout_margin="10dp"/>-->
+</RelativeLayout>

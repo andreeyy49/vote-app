@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".community.ListCommunityActivity">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Создать"
+        android:id="@+id/add_community_btn"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/centerHorizontal"
+        app:cornerRadius="15dp"
+        android:layout_margin="10dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Назад"
+        android:id="@+id/back_btn"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/centerHorizontal"
+        android:layout_margin="10dp"
+        app:cornerRadius="15dp"/>
+
+    <EditText
+        android:id="@+id/findCommunity_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Название сообщества"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_toStartOf="@id/findCommunity_btn"
+        app:cornerRadius="15dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/findCommunity_et"
+        android:background="@color/purple_200"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="20dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/add_community_btn"
+        android:layout_below="@id/findCommunity_et"
+        android:layout_margin="20dp"
+        android:id="@+id/ll_community">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/community_list"/>
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/findCommunity_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="Найти"
+        app:cornerRadius="15dp"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/centerHorizontal"/>
+
+</RelativeLayout>
