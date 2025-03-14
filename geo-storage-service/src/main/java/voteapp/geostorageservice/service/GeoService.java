@@ -97,7 +97,6 @@ public class GeoService {
         cityDto.add(city);
     }
 
-    @Transactional
     @Scheduled(cron = "0 0 0 * * ?", zone = "Europe/Moscow")
     public void saveAllCitiesAndCountries() {
         List<CityDto> citiesDto = initAllCities();

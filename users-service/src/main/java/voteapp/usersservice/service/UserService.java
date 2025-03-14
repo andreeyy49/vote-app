@@ -15,10 +15,6 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -31,20 +27,20 @@ public class UserService {
         return findById(UserContext.getUserId());
     }
 
-    public User update(User user, UUID id) {
-        User existingUser = findById(id);
+    public User update(User user) {
+        User existingUser = findById(UserContext.getUserId());
 
         if (existingUser != null) {
             existingUser.setName(user.getName());
             existingUser.setEmail(user.getEmail());
+            existingUser.setPhoto(user.getPhoto());
+            existingUser.setCity(user.getCity());
+            existingUser.setCountry(user.getCountry());
+            existingUser.setPhone(user.getPhone());
             return save(existingUser);
         }
 
         return save(user);
-    }
-
-    public void deleteById(UUID id) {
-        userRepository.deleteById(id);
     }
 
     public List<User> findAllByIds(List<UUID> id) {

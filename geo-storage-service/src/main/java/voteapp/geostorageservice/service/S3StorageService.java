@@ -71,7 +71,7 @@ public class S3StorageService {
             bytes = file.getBytes();
             base64String = Base64.getEncoder().encodeToString(bytes);
         } catch (IllegalArgumentException | IOException e) {
-            log.error("{}in uploadImage", e.getMessage());
+            log.error("{} in uploadImage", e.getMessage());
             throw new BadRequestException(e.getMessage());
         }
 
@@ -86,26 +86,27 @@ public class S3StorageService {
         metadata.addUserMetadata(ImageParameters.WIDTH.toString(), widthAndHeight.get(ImageParameters.WIDTH).toString());
         metadata.addUserMetadata(ImageParameters.HEIGHT.toString(), widthAndHeight.get(ImageParameters.HEIGHT).toString());
 
-        String existImageUrl = saveImageToDb(base64String, imageId, metadata);
-        if (existImageUrl != null) {
-            log.info("Дубль в s3Service");
-
-            return new ImageFileDto(getFullUrl(existImageUrl));
-        }
-
-        PutObjectRequest request = new PutObjectRequest(
-                bucket,
-                imageId,
-                inputStream,
-                metadata
-        );
-
         try {
+            String existImageUrl = saveImageToDb(base64String, imageId, metadata);
+            if (existImageUrl != null) {
+                log.info("Дубль в s3Service");
+                return new ImageFileDto(getFullUrl(existImageUrl));
+            }
+
+            PutObjectRequest request = new PutObjectRequest(
+                    bucket,
+                    imageId,
+                    inputStream,
+                    metadata
+            ).withCannedAcl(CannedAccessControlList.PublicRead); // Устанавливаем ACL здесь
+
             s3Client.putObject(request);
-            s3Client.setObjectAcl(bucket, imageId, CannedAccessControlList.PublicRead);
         } catch (AmazonS3Exception e) {
             log.error("S3client!!! {} in uploadImage", e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error in uploadImage: {}", e.getMessage());
         }
+
         return new ImageFileDto(getFullUrl(imageId));
     }
 

@@ -17,4 +17,7 @@
     <changeSet id="4" author="Andrei">
         <sqlFile path="db/changelog/V4__delete_password_column.sql"/>
     </changeSet>
+    <changeSet id="5" author="Andrei">
+        <sqlFile path="db/changelog/V5__add_columns.sql"/>
+    </changeSet>
 </databaseChangeLog>
